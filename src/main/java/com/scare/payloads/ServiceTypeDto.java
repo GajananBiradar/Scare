@@ -6,37 +6,31 @@ import java.util.List;
 import com.scare.model.GST;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class GSTDto {
+public class ServiceTypeDto {
+
+	private String service_id;
+
+	@Size(max = 20, min = 2, message = "Service Type should be between 2 to 20 charcters only")
+	private String serviceType;
+
+	private String abbrivation;
+
+	private GST gst;
 	
-	private String gst_id;
-	
+	@NotNull(message = "hsn_code cannot be null")
 	private Long hsn_code;
-	
-	@Size(max = 20, min = 2, message = "GST Descsription should be between 2 to 20 charcters only")
-	private String gstDesc;
-	
-	private Integer igst;
-	
-	private Integer sgst;
-	
-	private Integer cgst;
-	
-	
 }

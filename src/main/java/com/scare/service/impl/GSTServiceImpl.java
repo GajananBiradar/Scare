@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.scare.config.AppConstants;
+import com.scare.exceptions.ApiResponse;
+import com.scare.exceptions.DuplicateIdException;
 import com.scare.exceptions.ResourceNotFoundException;
 import com.scare.model.Category;
 import com.scare.model.GST;
@@ -121,14 +123,19 @@ public class GSTServiceImpl implements GSTService {
 
 		GST gst = this.modelMapper.map(gstDto, GST.class);
 		try {
-			gst.setGst_id(UUID.randomUUID().toString().split("-")[0]);
-			gst.setHsn_code(gstDto.getHsn_code());
-			gst.setGstDesc(gstDto.getGstDesc());
-			gst.setIgst(gstDto.getIgst());
-			GST savedGST = this.gstRepo.save(gst);
-			logger.info("GSTService: getAllGSTs - savedGST ::: {}", savedGST);
+			if ((gstRepo.findByHsn_code(gstDto.getHsn_code())) == null) {
+				gst.setGst_id(UUID.randomUUID().toString().split("-")[0]);
+				gst.setHsn_code(gstDto.getHsn_code());
+				gst.setGstDesc(gstDto.getGstDesc());
+				gst.setIgst(gstDto.getIgst());
+				GST savedGST = this.gstRepo.save(gst);
+				logger.info("GSTService: getAllGSTs - savedGST ::: {}", savedGST);
 
-			return this.modelMapper.map(savedGST, GSTDto.class);
+				return this.modelMapper.map(savedGST, GSTDto.class);
+			} else {
+				logger.info("GSTService: cretaeGST - HSN Code already present :::");
+				throw new DuplicateIdException("HSN Code already exists");
+			}
 		} catch (Exception ex) {
 			logger.error("GSTService: createGST - error ::: {}", ex.getMessage());
 			throw ex;
