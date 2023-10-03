@@ -1,9 +1,7 @@
-package com.scare.payloads;
+package com.scare.model;
 
 import java.util.Date;
 import java.util.List;
-
-import com.scare.model.GST;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,32 +9,33 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Data
+@Entity
+@Table(name = "priceMasterService")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class GSTDto {
+public class PriceMastersService {
+
+	@Id
+	@Column(name = "priceMasterService_id")
+	private String priceMasterService_id;
+
+	@NotNull(message = "Product name cannot be null")
+	@NotBlank
+	private Double purchase_price;	
 	
-	private String gst_id;
+	private Double margin;
 	
-	private Long hsn_code;
+	private Double selling_price;
 	
-	@Size(max = 20, min = 2, message = "GST Descsription should be between 2 to 20 charcters only")
-	private String gstDesc;
+	private Date effective_from;
 	
-	private Integer igst;
-	
-	private Integer sgst;
-	
-	private Integer cgst;
-	
+	private Date effective_till;
 	
 }

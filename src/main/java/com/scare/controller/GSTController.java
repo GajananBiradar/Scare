@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.scare.exceptions.ApiResponse;
+import com.scare.exceptions.DuplicateIdException;
 import com.scare.exceptions.ResourceNotFoundException;
 import com.scare.payloads.GSTDto;
 import com.scare.service.GSTService;
@@ -100,6 +101,9 @@ public class GSTController {
 		try {
 			GSTDto createGST = this.gstService.createGST(gstDto);
 			return new ResponseEntity<>(createGST, HttpStatus.CREATED);
+		} catch (DuplicateIdException ex) {
+			logger.error("GSTController: createGST - Duplicate HSN code ::: {}", ex.getMessage());
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		} catch (Exception ex) {
 			// Log the error
 			logger.error("GSTController: createGST - error ::: {}", ex.getMessage());
