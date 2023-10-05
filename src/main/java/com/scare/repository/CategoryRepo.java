@@ -12,8 +12,6 @@ import com.scare.model.Category;
 
 public interface CategoryRepo extends JpaRepository<Category, String>{
 
-//	Category findById(int catId);
-	
 	@Query("SELECT c FROM Category c WHERE c.category_name = ?1")
 	Category findByCategory_name(String category_name);	
 	
