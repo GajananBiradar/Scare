@@ -18,8 +18,7 @@ public class PostalPincodeDto {
 	private String area;
 	
 	@NotNull(message = "pincode can not be null")
-	@NotBlank
-	private Integer pincode;
+	private Long pincode;
 	
 	private String city;
 	

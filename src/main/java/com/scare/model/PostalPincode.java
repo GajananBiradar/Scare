@@ -26,14 +26,16 @@ import lombok.Setter;
 @Setter
 public class PostalPincode {
 
+	//https://api.postalpincode.in/pincode/{PINCODE}
+	
 	@Id
-//	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "product_id")
-	private String product_id;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "pincode_id")
+	private Long pincode_id;
 	
 	private String area;
 	
-	private Integer pincode;
+	private Long pincode;
 	
 	private String city;
 	

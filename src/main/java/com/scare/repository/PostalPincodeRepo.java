@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.scare.model.PostalPincode;
 
-public interface PostalPincodeRepo extends JpaRepository<PostalPincode, String>{
+public interface PostalPincodeRepo extends JpaRepository<PostalPincode, Long>{
 
+	 PostalPincode  findByArea(String area);
 }
