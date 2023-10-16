@@ -1,8 +1,10 @@
 package com.scare.service.impl;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -11,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -68,12 +71,18 @@ public class CategoryServiceImpl implements CategoryService {
 				throw new ResourceNotFoundException("Category", "id: ", Integer.parseInt(categoryId));
 			}
 			logger.info("CategoryService: getCategoryId - foundCategoryId ::: {}", category);
-
 			return this.modelMapper.map(category, CategoryDto.class);
 		} catch (ResourceNotFoundException ex) {
-			logger.error("CategoryService: getCategoryId - inputCategory Id - error ::: Category not found: {}",
+			logger.error(
+					"CategoryService: getCategoryId - inputCategory Id - ResourceNotFoundException error ::: Category not found: {}",
 					ex.getMessage());
 			// Propagate the exception to handle NotFound in Controller
+			throw ex;
+		} catch (NoSuchElementException ex) {
+			logger.error(
+					"CategoryService: getCategoryId - inputCategory Id - NoSuchElementException error ::: Category not found: {}",
+					ex.getMessage());
+			// Propagate the NoSuchElementException to handle NotFound in Controller
 			throw ex;
 		} catch (Exception ex) {
 			logger.error("CategoryService: getCategoryId - inputCategorId - error ::: {}", ex.getMessage());
@@ -113,9 +122,14 @@ public class CategoryServiceImpl implements CategoryService {
 	@Override
 	public List<CategoryDto> getAllCategories() {
 		logger.info("CategoryService: getAllCategories ");
-
 		try {
 			List<Category> allCategories = this.categoryRepo.findAll();
+			if (allCategories.isEmpty()) {
+				logger.info("CategoryService: getAllCategories - No categories found");
+				// Return an empty list or handle the empty result as needed
+				return new ArrayList<>();
+			}
+
 			List<CategoryDto> allCategory = allCategories.stream()
 					.map((category) -> this.modelMapper.map(category, CategoryDto.class)).collect(Collectors.toList());
 			int size = allCategory.size();
@@ -125,8 +139,11 @@ public class CategoryServiceImpl implements CategoryService {
 			if (size > 0) {
 				logger.info("CategoryService: getAllCategories - one category ::: {}", allCategory.get(0));
 			}
-
 			return allCategory;
+		} catch (DataAccessException ex) {
+			// Handle database-related exceptions
+			logger.error("CategoryService: getAllCategories - DataAccessException ::: {}", ex.getMessage());
+			throw ex;
 		} catch (Exception ex) {
 			logger.error("CategoryService: getAllCategories - error ::: {}", ex.getMessage());
 			throw ex;

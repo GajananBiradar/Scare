@@ -20,12 +20,11 @@ public class ServCareApplication implements CommandLineRunner {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
+
 	@Bean
 	public RestTemplate restTemplate() {
-	    return new RestTemplate();
+		return new RestTemplate();
 	}
-
 
 	@Autowired
 	private RoleRepo roleRepo;
